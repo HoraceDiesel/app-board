@@ -2,7 +2,7 @@ import { List, Map } from 'immutable';
 
 const state = List([]);
 
-export default function(state=state, action) => {
+export default function(state=state, action) {
   switch (action.type) {
     case 'ADD_MSG':
       return state.push(Map(action.payload));

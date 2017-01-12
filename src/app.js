@@ -1,14 +1,15 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { createStore } from 'redux';
-import { Records } from './components';
-import C from '../constants/dummy';
-import { List, Map } from 'immutable';
-import reducer from './reducer';
+import { Provider } from 'react-redux';
+import reducers from './reducers';
+import { Records } from './containers';
 
-const store = createStore(reducer);
+const store = createStore(reducers);
 
 render(
-  <Records msgs={ store.getState() } />,
+	<Provider store={store}>
+		<Records />
+	</Provider>,
   document.getElementById('content')
 );
