@@ -7,7 +7,7 @@ export default function(state=state, action) => {
     case 'ADD_MSG':
       return state.push(Map(action.payload));
     case 'DELETE_MSG':
-      const msgId = action.data;
+      const msgId = action.id;
       return state.filter(eachMsg => eachMsg.id !== msgId);
 
     default:
