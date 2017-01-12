@@ -2,15 +2,13 @@ import { List, Map } from 'immutable';
 
 const state = List([]);
 
-export default function(state=state, action) {
-  switch (action.type) {
+export default function(msgs=state, action) {
+  switch(action.type) {
     case 'ADD_MSG':
-      return state.push(Map(action.payload));
+      return msgs.push(Map(action.payload));
     case 'DELETE_MSG':
-      const msgId = action.id;
-      return state.filter(eachMsg => eachMsg.id !== msgId);
-
+      return msgs.filter(msg => msg.get('id') !== action.payload);
     default:
-      return state || [];
+      return msgs;
   }
 }

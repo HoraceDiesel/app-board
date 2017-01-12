@@ -1,39 +1,40 @@
 import React from 'react';
 
-export function Message(props) {
+export function Msg(props) {
   const { msg } = props;
-
-    return (<div className="message">
-    			<span>{msg.text}</span>
-    			<button onClick={deleted}>X</button>
-			</div>);
-
+    return <span>{msg.text}</span>;
 }
 
 export function Records(props) {
-  const { msgs, addMsg, deleteMsg } = props;
+  const { msgs, deleteMsg, addMsg } = props;
 
-  const added = ( evennt ) => {
-    const input = document.querySelector('.input-new');
+  const added = (event) => {
+    const input = document.querySelector('.input-msg');
     const text = input.value;
-    if ( text.length > 0 ) {
+
+    if(text.length > 0) {
       input.value = '';
-      addMsg( text );
+      addMsg(text);
     }
   };
 
   const deleted = id => event => deleteMsg(id);
 
   return (
-    <div className='msg'>
-      <input type='text' placeholder='new msg... ' className="input-new" />
-      <button onClick={added}>ADD</button>
-      <hr />
-        {msgs.map(msg => (
-          <div key={msg.id} className='record'>
-            <Message msg={msg} />
-          </div>
+    <div className='todo'>
+      <input type='text'
+             className='input-msg'
+             placeholder='Add message'
+             />
+      <button onClick={added} >ADD</button>
+      <ul>
+        {msgs.map(eachMsg => (
+          <li key={eachMsg.get('id')}>
+            <Msg msg={eachMsg.toJS()} />
+            <button onClick={deleted(eachMsg.get('id'))}>X</button>
+          </li>
         ))}
+      </ul>
     </div>
   );
 }

@@ -67,10 +67,10 @@
 	var store = (0, _redux.createStore)(_reducers2.default);
 
 	(0, _reactDom.render)(_react2.default.createElement(
-		_reactRedux.Provider,
-		{ store: store },
-		_react2.default.createElement(_containers.Records, null)
-	), document.getElementById('content'));
+	  _reactRedux.Provider,
+	  { store: store },
+	  _react2.default.createElement(_containers.Records, null)
+	), document.getElementById('app'));
 
 /***/ },
 /* 1 */
@@ -23737,34 +23737,20 @@
 	  value: true
 	});
 
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 	exports.default = function () {
-	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state;
+	  var msgs = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : state;
 	  var action = arguments[1];
 
-	  var _ret = function () {
-	    switch (action.type) {
-	      case 'ADD_MSG':
-	        return {
-	          v: state.push((0, _immutable.Map)(action.payload))
-	        };
-	      case 'DELETE_MSG':
-	        var msgId = action.id;
-	        return {
-	          v: state.filter(function (eachMsg) {
-	            return eachMsg.id !== msgId;
-	          })
-	        };
-
-	      default:
-	        return {
-	          v: state || []
-	        };
-	    }
-	  }();
-
-	  if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+	  switch (action.type) {
+	    case 'ADD_MSG':
+	      return msgs.push((0, _immutable.Map)(action.payload));
+	    case 'DELETE_MSG':
+	      return msgs.filter(function (msg) {
+	        return msg.get('id') !== action.payload;
+	      });
+	    default:
+	      return msgs;
+	  }
 	};
 
 	var _immutable = __webpack_require__(217);
@@ -28762,9 +28748,9 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+			value: true
 	});
-	exports.allRecords = undefined;
+	exports.Records = undefined;
 
 	var _reactRedux = __webpack_require__(199);
 
@@ -28776,17 +28762,17 @@
 
 	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-	var allRecords = exports.allRecords = (0, _reactRedux.connect)(function mapStateToProps(state) {
-		return { msgs: state };
+	var Records = exports.Records = (0, _reactRedux.connect)(function mapStateToProps(state) {
+			return { msgs: state };
 	}, function mapDispatchToProps(dispatch) {
-		return {
-			addMsg: function addMsg(text) {
-				return dispatch((0, _actions.addMsg)(text));
-			},
-			deleteMsg: function deleteMsg(id) {
-				return dispatch((0, _actions.deleteMsg)(id));
-			}
-		};
+			return {
+					addMsg: function addMsg(text) {
+							return dispatch((0, _actions.addMsg)(text));
+					},
+					deleteMsg: function deleteMsg(id) {
+							return dispatch((0, _actions.deleteMsg)(id));
+					}
+			};
 	})(components.Records);
 
 /***/ },
@@ -28798,7 +28784,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.Message = Message;
+	exports.Msg = Msg;
 	exports.Records = Records;
 
 	var _react = __webpack_require__(1);
@@ -28807,35 +28793,26 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function Message(props) {
+	function Msg(props) {
 	  var msg = props.msg;
 
-
 	  return _react2.default.createElement(
-	    'div',
-	    { className: 'message' },
-	    _react2.default.createElement(
-	      'span',
-	      null,
-	      msg.text
-	    ),
-	    _react2.default.createElement(
-	      'button',
-	      { onClick: deleted },
-	      'X'
-	    )
+	    'span',
+	    null,
+	    msg.text
 	  );
 	}
 
 	function Records(props) {
 	  var msgs = props.msgs,
-	      addMsg = props.addMsg,
-	      deleteMsg = props.deleteMsg;
+	      deleteMsg = props.deleteMsg,
+	      addMsg = props.addMsg;
 
 
-	  var added = function added(evennt) {
-	    var input = document.querySelector('.input-new');
+	  var added = function added(event) {
+	    var input = document.querySelector('.input-msg');
 	    var text = input.value;
+
 	    if (text.length > 0) {
 	      input.value = '';
 	      addMsg(text);
@@ -28850,21 +28827,32 @@
 
 	  return _react2.default.createElement(
 	    'div',
-	    { className: 'msg' },
-	    _react2.default.createElement('input', { type: 'text', placeholder: 'new msg... ', className: 'input-new' }),
+	    { className: 'todo' },
+	    _react2.default.createElement('input', { type: 'text',
+	      className: 'input-msg',
+	      placeholder: 'Add message'
+	    }),
 	    _react2.default.createElement(
 	      'button',
 	      { onClick: added },
 	      'ADD'
 	    ),
-	    _react2.default.createElement('hr', null),
-	    msgs.map(function (msg) {
-	      return _react2.default.createElement(
-	        'div',
-	        { key: msg.id, className: 'record' },
-	        _react2.default.createElement(Message, { msg: msg })
-	      );
-	    })
+	    _react2.default.createElement(
+	      'ul',
+	      null,
+	      msgs.map(function (eachMsg) {
+	        return _react2.default.createElement(
+	          'li',
+	          { key: eachMsg.get('id') },
+	          _react2.default.createElement(Msg, { msg: eachMsg.toJS() }),
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: deleted(eachMsg.get('id')) },
+	            'X'
+	          )
+	        );
+	      })
+	    )
 	  );
 	}
 
@@ -28875,27 +28863,29 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	  value: true
 	});
 	exports.addMsg = addMsg;
 	exports.deleteMsg = deleteMsg;
-	// Add a new message
+	var uid = function uid() {
+	  return Math.random().toString(34).slice(2);
+	};
+
 	function addMsg(text) {
-		var counter = 0;
-		return {
-			type: 'ADD_MSG',
-			payload: {
-				id: counter++,
-				text: text
-			}
-		};
+	  return {
+	    type: 'ADD_MSG',
+	    payload: {
+	      id: new Date(),
+	      text: text
+	    }
+	  };
 	}
 
 	function deleteMsg(id) {
-		return {
-			type: 'DELETE_MSG',
-			payload: id
-		};
+	  return {
+	    type: 'DELETE_MSG',
+	    payload: id
+	  };
 	}
 
 /***/ }
